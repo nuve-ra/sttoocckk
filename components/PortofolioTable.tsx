@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { StockHolding } from 'pages/api/types.ts';
 import { format } from 'date-fns';
+import { portfolioData } from "../pages/api/portfolioData";
+import type { StockHolding } from '.././pages/api/types'; // Keep this import as portfolioData uses it
 
 type LiveStock = {
   symbol: string;
