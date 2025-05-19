@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
 import { portfolioData } from "../pages/api/portfolioData";
-import type { StockHolding } from '.././pages/api/types'; // Keep this import as portfolioData uses it
+import type { StockHolding } from '.././pages/api/types';
 
 type LiveStock = {
   symbol: string;
@@ -23,14 +23,14 @@ interface PortfolioTableProps {
   portfolioData: StockHolding[];
 }
 
-const PortfolioTable: React.FC<PortfolioTableProps> = ({ portfolioData }) => {
+const PortfolioTable: React.FC<PortfolioTableProps> = ({ portfolioData: initialPortfolioData }) => {
   const [liveData, setLiveData] = useState<LiveStockData>({});
   const [selectedSector, setSelectedSector] = useState<string>('All Sectors');
 
   useEffect(() => {
     const fetchLiveStockAPIResponse = async () => {
       try {
-        const symbols = portfolioData.map((stock) => stock.symbol);
+        const symbols = initialPortfolioData.map((stock) => stock.symbol);
         const response = await axios.post('/api/realTimePrice', { symbols });
 
         const mappedData: LiveStockData = {};
@@ -54,14 +54,14 @@ const PortfolioTable: React.FC<PortfolioTableProps> = ({ portfolioData }) => {
 
     const interval = setInterval(fetchLiveStockAPIResponse, 6000);
     return () => clearInterval(interval);
-  }, [portfolioData]);
+  }, [initialPortfolioData]);
 
-  const sectors = Array.from(new Set(portfolioData.map((stock) => stock.sector))).sort();
+  const sectors = Array.from(new Set(initialPortfolioData.map((stock) => stock.sector))).sort();
 
   const filteredPortfolioData =
     selectedSector === 'All Sectors'
-      ? portfolioData
-      : portfolioData.filter((stock) => stock.sector === selectedSector);
+      ? initialPortfolioData
+      : initialPortfolioData.filter((stock) => stock.sector === selectedSector);
 
   const totalInvestment = filteredPortfolioData.reduce(
     (acc, stock) => acc + stock.purchasePrice * stock.quantity,
@@ -98,6 +98,7 @@ const PortfolioTable: React.FC<PortfolioTableProps> = ({ portfolioData }) => {
         </select>
       </div>
 
+      {/* ... rest of your rendering logic using filteredPortfolioData, liveData, etc. ... */}
       <div className="hidden md:block mt-6">
         <h2 className="text-2xl font-semibold text-blue-600 mb-4">📈 Stock Portfolio</h2>
         <div className="overflow-x-auto rounded-lg shadow-md border border-gray-200">
@@ -128,7 +129,6 @@ const PortfolioTable: React.FC<PortfolioTableProps> = ({ portfolioData }) => {
                 const presentValue = cmp * stock.quantity;
                 const gainLoss = presentValue - investment;
                 const gainClass = gainLoss >= 0 ? 'text-green-600' : 'text-red-600';
-                //const historicalPoints = historicalData[stock.symbol]?.length ?? 0;
 
                 return (
                   <tr key={stock.symbol} className="hover:bg-yellow-50">
@@ -164,7 +164,6 @@ const PortfolioTable: React.FC<PortfolioTableProps> = ({ portfolioData }) => {
           const presentValue = cmp * stock.quantity;
           const gainLoss = presentValue - investment;
           const gainClass = gainLoss >= 0 ? 'text-green-600' : 'text-red-600';
-          // const historicalPoints = historicalData[stock.symbol]?.length ?? 0;
 
           return (
             <div key={stock.symbol} className="border rounded-xl shadow-lg p-4 bg-white">
