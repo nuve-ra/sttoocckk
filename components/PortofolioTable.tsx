@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { StockHolding } from '../pages/api/types';
+import { StockHolding } from 'pages/api/types.ts';
 import { format } from 'date-fns';
 
 type LiveStock = {
