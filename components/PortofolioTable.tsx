@@ -12,15 +12,26 @@ type LiveStock = {
   
 };
 
-// type CombinedStock = typeof portfolioData[0] & {
-//   cmp: number | null;
-//   value: number | null;
-//   gainLoss: number | null;
-// };
+type CombinedStock = typeof portfolioData[0] & {
+  cmp: number | null;
+  value: number | null;
+  gainLoss: number | null;
+};
 
 //type LiveStockAPIResponse = LiveStock[];
 
 //
+//type HistoricalDataMap = {
+//  [symbol: string]: Array<{
+//    date: string;
+//    open: number;
+//    close: number;
+//    high: number;
+//    low: number;
+//    volume: number;
+//  }>;
+//};
+
 type LiveStockData = {
   [symbol: string]: {
     cmp: number;
@@ -78,6 +89,9 @@ latestEarnings: typeof stock.earningsTimestamp === 'number'
       console.error('Error fetching live stock data:', err);
     }
   };
+
+  
+
   fetchLiveStockAPIResponse();
   //fetchHistoricalData();
 
